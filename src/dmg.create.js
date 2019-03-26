@@ -5,8 +5,9 @@ import Os from 'os'
 
 import axios from 'npm://axios@^0.18.0'
 import uniqid from 'https://kwx.kodhe.com/x/v/0.3.1/std/util/uniqid.js'
-import fsextra from 'fs-extra@^7.x'
-import appdmg from 'npm://appdmg@^0.5.2'
+import fsextra from 'npm://fs-extra@^7.x'
+// npmi:// is for allow modules that depends on native 
+import appdmg from 'npmi://appdmg@^0.5.2'
 import Exception from './exception'
 
 var tmpDir, deferred, Unarchiver
@@ -26,7 +27,7 @@ export var kawixDynamic= {
 }
 
 
-export var invoke= function(env,ctx){
+export var invoke= async function(env,ctx){
 	var body, response, def, fileout, stream, streamIn,
 		files, file, folderout, config, generated, dmg,
 		progress, name
@@ -135,7 +136,7 @@ export var invoke= function(env,ctx){
 	catch(e){
 		env.reply.code(500).send({
 			error:{
-				message: e.message
+				message: e.message,
 				code: e.code
 			}
 		})

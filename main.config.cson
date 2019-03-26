@@ -10,5 +10,5 @@ cluster: [
 ]
 # folder for vhosts
 include: [
-    "./app.config.*"
+    "./app.config.cson"
 ]

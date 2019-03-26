@@ -21,7 +21,7 @@ site:
 		{
 			path: "/dmg/create"
 			method: 'all'
-			folder: "./src/dmg.create"
+			file: "./src/dmg.create"
 		}
 
 		{
