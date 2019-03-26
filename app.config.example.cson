@@ -1,0 +1,33 @@
+site:
+	name: 'dmg-service'
+	globalprefixes: [
+		{
+			"path": "/site/dmg-service"
+			"middleware":
+				file: "./src/lib/middleware"
+		}
+	]
+
+	hosts: [
+		{
+			host: 'dmg-service.kodhe.com'
+			"middleware":
+				file: "./src/lib/middleware"
+		}
+	]
+
+	routes: [
+
+		{
+			path: "/dmg/create"
+			method: 'all'
+			folder: "./src/dmg.create"
+		}
+
+		{
+			path: "/dmg/download/"
+			method: 'use'
+			static: "./generated"
+		}
+
+	]
