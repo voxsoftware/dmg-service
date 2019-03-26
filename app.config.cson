@@ -10,7 +10,7 @@ site:
 
 	hosts: [
 		{
-			host: 'dmg-service.kodhe.com'
+			host: 'dmg.kodhe.com'
 			"middleware":
 				file: "./src/lib/middleware"
 		}
@@ -27,7 +27,7 @@ site:
 		{
 			path: "/dmg/download/"
 			method: 'use'
-			static: "./generated"
+			file: "./src/download"
 		}
 
 	]

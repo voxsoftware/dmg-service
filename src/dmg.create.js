@@ -10,7 +10,7 @@ import fsextra from 'npm://fs-extra@^7.x'
 import appdmg from 'npmi://appdmg@^0.5.2'
 import Exception from './exception'
 
-var tmpDir, deferred, Unarchiver
+var tmpdir, deferred, Unarchiver
 
 
 deferred= function(){
@@ -30,7 +30,7 @@ export var kawixDynamic= {
 export var invoke= async function(env,ctx){
 	var body, response, def, fileout, stream, streamIn,
 		files, file, folderout, config, generated, dmg,
-		progress, name
+		progress, name, basename
 
 	try{
 
@@ -52,7 +52,7 @@ export var invoke= async function(env,ctx){
 			// download from file
 			response= await axios({
 				method:'get',
-				url:'http://bit.ly/2mTM3nY',
+				url: body.url,
 				responseType:'stream'
 			})
 			streamIn= response.data
@@ -86,9 +86,9 @@ export var invoke= async function(env,ctx){
 				decompress_tar: await import("npm://decompress-targz@^4.1.1")
 			}
 		}
-
+		
 		await Unarchiver.decompress(fileout, folderout, {
-			plugins: [Unarchiver.decompress_unzip, Unarchiver.decompress_tar]
+			plugins: [Unarchiver.decompress_unzip(), Unarchiver.decompress_tar()]
 		})
 
 		files= await fs.readdirAsync(folderout)
@@ -104,13 +104,44 @@ export var invoke= async function(env,ctx){
 			}
 		}
 
-
+		basename= body.name || Path.basename( (config.appfile || "generated") , '.app')
 		if(!config.paramfile){
-			throw Exception.create("Cannot find an appdmg.json file").putCode("INVALID_CONFIG")
+		
+			if(!config.appfile){
+				throw Exception.create("Cannot find an appdmg.json file").putCode("INVALID_CONFIG")
+			}
+
+			// create a default file 
+			config.paramfile= folderout + "/.app.dmg.json"
+			config.default= {
+				"title": basename,
+				"contents": [
+				  { "x": 350, "y": 140, "type": "link", "path": "/Applications" },
+				  { "x": 150, "y": 140, "type": "file", "path": "./" + Path.basename(config.appfile) }
+				],
+				"window":{
+					"size":{
+						"width": 546,
+						"height": 326
+					}
+				}
+			}
+			await fs.writeFileAsync(config.paramfile, JSON.stringify(config.default))
+
+
+		}
+		else{
+			config.default= JSON.parse(await fs.readFileAsync(config.paramfile,'utf8'))
+			if(!config.default.title){
+				config.default.title= basename 
+				await fs.writeFileAsync(config.paramfile, JSON.stringify(config.default))
+			}
+			basename= (body.name || config.default.title)
 		}
 
 		// make the DMG
-		name= Path.basename(config.appfile || "generated." + uniqid(), '.app') + ".dmg"
+		basename+=".dmg"
+		name=  Path.basename( (config.appfile || "generated-") + uniqid(), '.app') + ".dmg"
 		generated= Path.join(__dirname, "..", "generated", name)
 		progress= []
 		dmg= appdmg({
@@ -129,7 +160,7 @@ export var invoke= async function(env,ctx){
 
 		env.reply.code(200).send({
 			result: progress,
-			url: "download/" + name
+			url: "download/" + name + "?name=" + basename
 		})
 
 	}
@@ -137,11 +168,16 @@ export var invoke= async function(env,ctx){
 		env.reply.code(500).send({
 			error:{
 				message: e.message,
-				code: e.code
+				code: e.code,
+				stack: e.stack
 			}
 		})
 	}
 	finally{
+		if(fileout && fs.existsSync(fileout)){
+			// unlink
+			await fs.unlinkAsync(fileout)
+		}
 		if(folderout && fs.existsSync(folderout)){
 			// RMDIR
 			await fsextra.remove(folderout)
