@@ -81,10 +81,36 @@ You will get a JSON like this:
 }
 ```
 
-In the response is returned the relatiev **url** for start download the generated DMG
+In the response is returned the relative **url** for start download the generated DMG
 
 ```http://127.0.0.1:10000/site/dmg-service/dmg/download/Visual Studio Code.app1rw3jf90jtpin4h9.dmg?name=Visual Studio Code.dmg```
 
+
+### How works 
+
+* This service takes a compressed MacOs app and creates a DMG. You can optionally customize the DMG, providing a filename named ```appdmg.json``` with a valid configuration. 
+
+* If you want know what are the possible values for configuration, take a look on [appdmg module](https://github.com/LinusU/node-appdmg)
+
+* Your compressed file can be ```.zip``` or ```tar.gz``` 
+
+* If you don't provide a file ```appdmg.json```, this service will create a default, looks like that:
+
+```json
+{
+    "title": "YOURAPP",
+    "contents": [
+        { "x": 350, "y": 140, "type": "link", "path": "/Applications" },
+        { "x": 150, "y": 140, "type": "file", "path": "./YOURAPP.app"  }
+    ],
+    "window":{
+        "size":{
+            "width": 546,
+            "height": 326
+        }
+    }
+}
+```
 
 
 ### Contribute 
