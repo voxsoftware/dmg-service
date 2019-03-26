@@ -9,6 +9,7 @@ import fsextra from 'npm://fs-extra@^7.x'
 // npmi:// is for allow modules that depends on native 
 import appdmg from 'npmi://appdmg@^0.5.2'
 import Exception from './exception'
+import state from './lib/state'
 
 var tmpdir, deferred, Unarchiver
 
@@ -34,6 +35,10 @@ export var invoke= async function(env,ctx){
 
 	try{
 
+		state.count++
+		if(state.count > 4){
+			throw Exception.create("Just now is being generated 4 DMG files in this process. Please try again").putCode("BUSY")
+		}
 
 		if(!tmpdir){
 			tmpdir= Path.join(Os.homedir(), ".kawi", "dmg-service")
@@ -159,8 +164,8 @@ export var invoke= async function(env,ctx){
 
 
 		env.reply.code(200).send({
-			result: progress,
-			url: "download/" + name + "?name=" + basename
+			url: "download/" + name + "?name=" + basename,
+			result: progress			
 		})
 
 	}
@@ -174,6 +179,7 @@ export var invoke= async function(env,ctx){
 		})
 	}
 	finally{
+		state.count--
 		if(fileout && fs.existsSync(fileout)){
 			// unlink
 			await fs.unlinkAsync(fileout)
