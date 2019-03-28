@@ -17,23 +17,23 @@ Mod = {
 
 
 		if (!state.jsonParser) {
-		state.jsonParser = bodyParser.json({
-			limit: '5mb'
-		});
+			state.jsonParser = bodyParser.json({
+				limit: '5mb'
+			});
 		}
 		if (!state.urlencodedParser) {
-		state.urlencodedParser = bodyParser.urlencoded({
-			limit: '5mb'
-		});
+			state.urlencodedParser = bodyParser.urlencoded({
+				limit: '5mb'
+			});
 		}
 		def = Mod.deferred();
 		env.request.once("error", def.reject);
 		state.jsonParser(env.request, env.response, def.resolve);
 		await def.promise;
 		if (!env.request.body) {
-		def = Mod.deferred();
-		state.urlencodedParser(env.request, env.response, def.resolve);
-		await def.promise;
+			def = Mod.deferred();
+			state.urlencodedParser(env.request, env.response, def.resolve);
+			await def.promise;
 		}
 		// union into env.body
 		return env.body = Object.assign({}, (env.request && env.request.query) || {}, (env.request && env.request.body) || {});
