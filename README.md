@@ -16,6 +16,8 @@ You can also use CURL for send your local zipped app file
 curl --request POST --data-binary "@/path/to/yourapp.zip" https://dmg.kodhe.com/create
 ```
 
+The response is a json, with an ```url``` property, for start downloading the ```dmg file```. Scroll down for more info how works. 
+
 
 
 ### Get started
