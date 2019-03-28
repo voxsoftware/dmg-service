@@ -61,9 +61,11 @@ export var invoke= async function(env,ctx){
 				responseType:'stream'
 			})
 			streamIn= response.data
+			process.env.DMG_MESSAGES && console.info("Generando desde url: ", body.url)
 		}
 		else{
 			streamIn= env.request
+			process.env.DMG_MESSAGES &&  console.info("Generando desde request")
 		}
 
 		fileout= Path.join(tmpdir, uniqid())

@@ -25,7 +25,19 @@ site:
 		}
 
 		{
+			path: "/create"
+			method: 'all'
+			file: "./src/dmg.create"
+		}
+
+		{
 			path: "/dmg/download/"
+			method: 'use'
+			file: "./src/download"
+		}
+
+		{
+			path: "/download/"
 			method: 'use'
 			file: "./src/download"
 		}
