@@ -10,6 +10,13 @@ Here is an url example for generate a DMG based on VsCode app. You can replace t
 https://dmg.kodhe.com/create?url=https://az764295.vo.msecnd.net/stable/a3db5be9b5c6ba46bb7555ec5d60178ecc2eaae4/VSCode-darwin-stable.zip
 ```
 
+You can also use CURL for send your local zipped app file
+
+```
+curl --request POST --data-binary "@/path/to/yourapp.zip" https://dmg.kodhe.com/create
+```
+
+
 
 ### Get started
 
