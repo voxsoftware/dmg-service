@@ -2,6 +2,15 @@
 
 Webservice for generate good DMG files from an MacOS app. 
 
+### Test online free 
+
+Here is an url example for generate a DMG based on VsCode app. You can replace the parameter url with your own: 
+
+```
+https://dmg.kodhe.com/create?url=https://az764295.vo.msecnd.net/stable/a3db5be9b5c6ba46bb7555ec5d60178ecc2eaae4/VSCode-darwin-stable.zip
+```
+
+
 ### Get started
 
 You have many options for starting. 
